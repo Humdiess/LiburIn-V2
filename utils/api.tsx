@@ -13,9 +13,9 @@ export interface Place {
   };
 }
 
-interface ApiResponse {
-  data: Place[];
-  // tambahkan properti lain jika diperlukan, misalnya untuk paginasi
+interface ApiResponse<T> {
+  data: T[];
+  // Add other properties if needed, e.g., for pagination
 }
 
 export const fetchPlaces = async (): Promise<Place[]> => {
@@ -24,7 +24,27 @@ export const fetchPlaces = async (): Promise<Place[]> => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    const result: ApiResponse = await response.json();
+    const result: ApiResponse<Place> = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+    throw error;
+  }
+};
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export const fetchCategories = async (): Promise<Category[]> => {
+  try {
+    const response = await fetch('https://dewalaravel.com/api/categories');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const result: ApiResponse<Category> = await response.json();
     return result.data;
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error);
