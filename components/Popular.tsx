@@ -58,11 +58,10 @@ const Popular = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
+    // marginTop: 30,
   },
   flatListContainer: {
     paddingHorizontal: 10,
-    marginTop: 20,
   },
   row: {
     justifyContent: 'space-between',

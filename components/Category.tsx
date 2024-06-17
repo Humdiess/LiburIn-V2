@@ -1,13 +1,16 @@
+// Component/Category.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { fetchCategories, Category } from '../utils/api';
 import SectionTitle from './SectionTitle';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 const CategorySelector = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const getCategories = async () => {
@@ -56,14 +59,14 @@ const CategorySelector = () => {
   return (
     <View style={styles.container}>
       <SectionTitle title="Category" onViewAllPress={() => console.log('View all categories')} />
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingStart: 10 }} >
         {categories.map((category) => (
           <TouchableOpacity
             key={category.id}
             style={[styles.categoryItem, { backgroundColor: getColor(category.name) }]}
-            onPress={() => console.log(`Selected category: ${category.slug}`)}
+            onPress={() => router.push(`/category/${category.slug}`)}
           >
-            <MaterialIcons name={getIcon(category.name)} size={18} color="white" style={styles.icon} />
+            <MaterialIcons name={getIcon(category.name) as string} size={18} color="white" style={styles.icon} />
             <Text style={styles.categoryText}>{category.name}</Text>
           </TouchableOpacity>
         ))}
@@ -77,7 +80,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   scrollContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
     paddingStart: 10,
     marginTop: 15,
@@ -98,7 +100,6 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     color: 'white',
-    // fontWeight: 'bold',
     textAlign: 'left',
     position: 'absolute',
     bottom: 10,

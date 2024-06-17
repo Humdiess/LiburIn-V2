@@ -94,13 +94,12 @@ const Recommendations = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
+    // marginTop: 30,
   },
   scrollContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingStart: 10,
-    marginTop: 15
   },
   card: {
     width: 260,

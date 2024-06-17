@@ -9,6 +9,12 @@ export default function RootLayout() {
           headerShown: false 
         }} 
       />
+      <Stack.Screen
+        name="category/[categorySlug]"
+        options={{ 
+          headerShown: true, 
+          headerTitle: "Category" }} 
+      />
     </Stack>
   );
 }
