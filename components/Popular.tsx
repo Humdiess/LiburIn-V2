@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndi
 import { fetchPlaces, Place } from '../utils/api';
 import SectionTitle from './SectionTitle';
 import { MaterialIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 const Popular = () => {
   const [places, setPlaces] = useState<Place[]>([]);
@@ -32,8 +33,14 @@ const Popular = () => {
     return <Text>Error: {error}</Text>;
   }
 
+  const handlePress = (slug: string) => {
+    router.push(`/place/${slug}`);
+    console.log(`Pressed: ${slug}`);
+  };
+
+
   const renderItem = ({ item }: { item: Place }) => (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={() => handlePress(item.slug)}>
       <Image source={{ uri: item.photo }} style={styles.image} />
       <View style={styles.overlay}>
         <View style={styles.categoryContainer}>

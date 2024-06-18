@@ -1,6 +1,6 @@
 // Component/Category.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 import { fetchCategories, Category } from '../utils/api';
 import SectionTitle from './SectionTitle';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -28,7 +28,7 @@ const CategorySelector = () => {
   }, []);
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   if (error) {

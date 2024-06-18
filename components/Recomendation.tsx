@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import SectionTitle from './SectionTitle';
+import { useRouter } from 'expo-router'; // Update import to use `useRouter` hook
 
 interface Category {
   id: number;
@@ -32,9 +33,9 @@ const fetchPlaces = async (): Promise<Place[]> => {
   }
 };
 
-const PlaceCard = ({ place }: { place: Place }) => {
+const PlaceCard = ({ place, handlePress }: { place: Place; handlePress: (slug: string) => void }) => {
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={() => handlePress(place.slug)}>
       <Image source={{ uri: place.photo }} style={styles.image} />
       <View style={styles.overlay}>
         <View style={styles.topRow}>
@@ -55,6 +56,7 @@ const Recommendations = () => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const getPlaces = async () => {
@@ -72,6 +74,11 @@ const Recommendations = () => {
     getPlaces();
   }, []);
 
+  const handlePress = (slug: string) => {
+    router.push(`/place/${slug}`);
+    console.log(`Pressed: ${slug}`);
+  };
+
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
@@ -83,9 +90,9 @@ const Recommendations = () => {
   return (
     <View>
       <SectionTitle title="Rekomendasi" onViewAllPress={() => console.log('View all recommendations')} />
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingStart: 10}} >
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ paddingStart: 10 }}>
         {places.map((place) => (
-          <PlaceCard key={place.id} place={place} />
+          <PlaceCard key={place.id} place={place} handlePress={handlePress} />
         ))}
       </ScrollView>
     </View>
@@ -96,7 +103,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingStart:0,
+    paddingStart: 0,
   },
   card: {
     width: 260,
