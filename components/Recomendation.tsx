@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingStart: 20,
+    paddingStart:0,
   },
   card: {
     width: 260,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     paddingVertical: 6,
     borderRadius: 100,
     maxWidth: 68,

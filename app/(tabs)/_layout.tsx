@@ -18,10 +18,9 @@ export default function TabsLayout() {
                     },
                     headerShadowVisible: false,
                     headerLeft: () => (
-                        <Image
-                            source={{ uri: 'https://dummyimage.com/40x40/000/fff&text=P' }}
-                            style={{ width: 40, height: 40, borderRadius: 20, marginLeft: 15 }}
-                        />
+                        <TouchableOpacity onPress={() => router.push('../profile') } style={{ marginLeft: 25 }}>
+                            <MaterialCommunityIcons name="menu" size={24} color="black" />
+                        </TouchableOpacity>
                     ),
                     headerRight: () => (
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 15, gap: 20 }}>
