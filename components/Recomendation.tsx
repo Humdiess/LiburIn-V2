@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import SectionTitle from './SectionTitle';
 
@@ -44,7 +44,7 @@ const PlaceCard = ({ place }: { place: Place }) => {
       </View>
       <Text style={styles.name}>{place.name}</Text>
       <View style={styles.locationContainer}>
-        <MaterialCommunityIcons name="map-marker-outline" size={20} color="grey" />
+        <MaterialIcons name="category" size={18} color="grey" />
         <Text style={styles.location}>{place.category.name}</Text>
       </View>
     </TouchableOpacity>
@@ -73,7 +73,7 @@ const Recommendations = () => {
   }, []);
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   if (error) {
@@ -81,9 +81,9 @@ const Recommendations = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View>
       <SectionTitle title="Recommendations" onViewAllPress={() => console.log('View all recommendations')} />
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingStart: 10}} >
         {places.map((place) => (
           <PlaceCard key={place.id} place={place} />
         ))}
@@ -93,13 +93,10 @@ const Recommendations = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    // marginTop: 30,
-  },
   scrollContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingStart: 10,
+    paddingStart: 20,
   },
   card: {
     width: 260,
@@ -120,24 +117,35 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     justifyContent: 'space-between',
-    padding: 8,
+    padding: 10,
   },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingVertical: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    paddingVertical: 6,
     borderRadius: 100,
     maxWidth: 68,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   rating: {
     color: 'white',
     fontWeight: 'bold',
+    fontSize: 12,
     marginLeft: 5,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   name: {
-    fontWeight: 'bold',
+    fontWeight: '500',
     fontSize: 16,
     marginTop: 8,
   },

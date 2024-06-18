@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -11,7 +12,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title, onViewAllPress }) =>
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <TouchableOpacity style={styles.button} onPress={onViewAllPress}>
-        <Text style={styles.viewAllText}>View all</Text>
+        <MaterialIcons name="chevron-right" size={24} color="black" />
       </TouchableOpacity>
     </View>
   );
@@ -19,16 +20,16 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title, onViewAllPress }) =>
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 15,
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   button: {
     backgroundColor: 'transparent',

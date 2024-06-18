@@ -15,6 +15,12 @@ export default function RootLayout() {
           headerShown: true, 
           headerTitle: "Category" }} 
       />
+      <Stack.Screen
+        name="search"
+        options={{ 
+          headerShown: true, 
+          headerTitle: "Search" }} 
+      />
     </Stack>
   );
 }

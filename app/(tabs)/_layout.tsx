@@ -1,7 +1,7 @@
 import React from 'react';
-import { Tabs } from 'expo-router';
-import { Image, View } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Tabs, router } from 'expo-router';
+import { Image, TouchableOpacity, View } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; // Menggunakan MaterialCommunityIcons
 
 export default function TabsLayout() {
     return (
@@ -25,13 +25,51 @@ export default function TabsLayout() {
                     ),
                     headerRight: () => (
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 15, gap: 20 }}>
-                            <MaterialIcons name="search" size={24} color="black" />
-                            <MaterialIcons name="notifications-none" size={24} color="black" />
+                            <TouchableOpacity onPress={() => router.push('../search') }>
+                                <MaterialCommunityIcons name="magnify" size={24} color="black" /> 
+                            </TouchableOpacity>
+                            <MaterialCommunityIcons name="bell-outline" size={24} color="black" /> 
                         </View>
+                    ),
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ color, size, focused }) => (
+                        <MaterialCommunityIcons name="home-outline" size={size} color={focused ? "black" : color} />
                     ),
                 }}
             />
-            <Tabs.Screen name="search" options={{ headerShown: false }} />
+            <Tabs.Screen 
+                name="wishlist" 
+                options={{
+                    headerShown: true,
+                    headerTitle: "Wishlist",
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ color, size, focused }) => (
+                        <MaterialCommunityIcons name="bookmark-outline" size={size} color={focused ? "black" : color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen 
+                name="activity" 
+                options={{
+                    headerShown: true,
+                    headerTitle: "Your activity",
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ color, size, focused }) => (
+                        <MaterialCommunityIcons name="calendar-outline" size={size} color={focused ? "black" : color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen 
+                name="profile" 
+                options={{
+                    headerTitle: "Profile",
+                    headerTitleAlign: "center",
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ color, size, focused }) => (
+                        <MaterialCommunityIcons name="account-outline" size={size} color={focused ? "black" : color} />
+                    ),
+                }}
+            />
         </Tabs>
     );
 }

@@ -1,26 +1,97 @@
-import React from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import React, { useState, useRef, useEffect } from 'react';
+import { View, StyleSheet, Image, ScrollView, Dimensions, Text, Animated } from 'react-native';
+
+const { width: viewportWidth } = Dimensions.get('window');
 
 const Hero = () => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const scrollViewRef = useRef(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity value for animation
+
+  const banners = [
+    require('../assets/images/banner (1).png'),
+    require('../assets/images/banner (2).png'),
+    require('../assets/images/banner (3).png'),
+  ];
+
+  const handleScroll = (event) => {
+    const slide = Math.ceil(
+      event.nativeEvent.contentOffset.x / event.nativeEvent.layoutMeasurement.width
+    );
+    if (slide !== activeSlide) {
+      setActiveSlide(slide);
+    }
+  };
+
+  useEffect(() => {
+    // Auto slide effect
+    const intervalId = setInterval(() => {
+      setActiveSlide((prevSlide) => {
+        const nextSlide = (prevSlide + 1) % banners.length;
+        scrollViewRef.current.scrollTo({ x: nextSlide * (viewportWidth - 30), animated: true });
+        return nextSlide;
+      });
+    }, 3000); // Change slide every 3 seconds
+
+    // Start text animations
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start();
+
+    return () => clearInterval(intervalId);
+  }, [banners.length, fadeAnim]);
+
   return (
     <View style={styles.hero}>
-        <Text style={styles.title}>Halo, user!</Text>
-        <Text style={{ width: 250 }}>We hope you can find what you came for</Text>
+      <Animated.Text style={[styles.welcomeText, { opacity: fadeAnim }]}>Halo, Masyhudi</Animated.Text>
+      <Animated.Text style={[styles.slogan, { opacity: fadeAnim }]}>Mau liburan kemana kamu hari ini?</Animated.Text>
+      <ScrollView
+        ref={scrollViewRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
+        {banners.map((image, index) => (
+          <View key={index} style={styles.imageContainer}>
+            <Image key={index} style={styles.image} source={image} />
+          </View>
+        ))}
+      </ScrollView>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-    hero: {
-        paddingHorizontal: 10,
-        paddingTop: 10,
-    },
-    title: {
-        color: 'black',
-        fontSize: 32,
-        fontWeight: 'bold',
-        paddingVertical: 10,
-    }
+  hero: {
+    paddingHorizontal: 15,
+    paddingTop: 10,
+  },
+  imageContainer: {
+    width: viewportWidth - 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderRadius: 10,
+  },
+  image: {
+    width: '100%',
+    height: 80,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: '600',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  slogan: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
 });
 
-export default Hero
+export default Hero;

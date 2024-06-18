@@ -1,6 +1,6 @@
 // Component/Category.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TouchableHighlight } from 'react-native';
 import { fetchCategories, Category } from '../utils/api';
 import SectionTitle from './SectionTitle';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -57,7 +57,7 @@ const CategorySelector = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View>
       <SectionTitle title="Category" onViewAllPress={() => console.log('View all categories')} />
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingStart: 10 }} >
         {categories.map((category) => (
@@ -76,12 +76,9 @@ const CategorySelector = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 25,
-  },
   scrollContainer: {
     alignItems: 'center',
-    paddingStart: 10,
+    paddingStart: 20,
     marginTop: 15,
   },
   categoryItem: {
