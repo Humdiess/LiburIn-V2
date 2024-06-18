@@ -58,7 +58,7 @@ const CategorySelector = () => {
 
   return (
     <View>
-      <SectionTitle title="Category" onViewAllPress={() => console.log('View all categories')} />
+      <SectionTitle title="Kategori" onViewAllPress={() => console.log('View all categories')} />
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingStart: 10 }} >
         {categories.map((category) => (
           <TouchableOpacity

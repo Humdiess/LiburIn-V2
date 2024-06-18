@@ -82,7 +82,7 @@ const Recommendations = () => {
 
   return (
     <View>
-      <SectionTitle title="Recommendations" onViewAllPress={() => console.log('View all recommendations')} />
+      <SectionTitle title="Recommendasi" onViewAllPress={() => console.log('View all recommendations')} />
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{paddingStart: 10}} >
         {places.map((place) => (
           <PlaceCard key={place.id} place={place} />

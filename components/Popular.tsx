@@ -48,7 +48,7 @@ const Popular = () => {
 
   return (
     <View>
-      <SectionTitle title="Popular" onViewAllPress={() => console.log('View all popular')} />
+      <SectionTitle title="Populer" onViewAllPress={() => console.log('View all popular')} />
       <FlatList
         data={places}
         renderItem={renderItem}

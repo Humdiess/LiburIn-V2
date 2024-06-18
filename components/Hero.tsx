@@ -5,8 +5,8 @@ const { width: viewportWidth } = Dimensions.get('window');
 
 const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const scrollViewRef = useRef(null);
-  const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity value for animation
+  const scrollViewRef = useRef<ScrollView | null>(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current; 
 
   const banners = [
     require('../assets/images/banner (1).png'),
@@ -14,7 +14,7 @@ const Hero = () => {
     require('../assets/images/banner (3).png'),
   ];
 
-  const handleScroll = (event) => {
+  const handleScroll = (event:any) => {
     const slide = Math.ceil(
       event.nativeEvent.contentOffset.x / event.nativeEvent.layoutMeasurement.width
     );
@@ -24,16 +24,16 @@ const Hero = () => {
   };
 
   useEffect(() => {
-    // Auto slide effect
-    const intervalId = setInterval(() => {
+      const intervalId = setInterval(() => {
       setActiveSlide((prevSlide) => {
         const nextSlide = (prevSlide + 1) % banners.length;
-        scrollViewRef.current.scrollTo({ x: nextSlide * (viewportWidth - 30), animated: true });
+        if (scrollViewRef.current) {
+          scrollViewRef.current.scrollTo({ x: nextSlide * (viewportWidth - 30), animated: true });
+        }
         return nextSlide;
       });
-    }, 3000); // Change slide every 3 seconds
+    }, 3000);
 
-    // Start text animations
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 2000,
@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 24,
-    fontWeight: '600',
-    marginBottom: 10,
+    fontWeight: 'bold',
+    marginBottom: 5,
     textAlign: 'center',
   },
   slogan: {
