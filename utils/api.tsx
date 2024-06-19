@@ -18,19 +18,18 @@ interface ApiResponse<T> {
   // Add other properties if needed, e.g., for pagination
 }
 
-export const fetchPlaces = async (): Promise<Place[]> => {
+// utils/api.ts
+
+export const fetchPlaces = async (page = 1) => {
   try {
-    const response = await fetch('https://dewalaravel.com/api/places');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const result: ApiResponse<Place> = await response.json();
-    return result.data;
+    const response = await fetch(`https://dewalaravel.com/api/places?page=${page}`);
+    const data = await response.json();
+    return data.data;
   } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-    throw error;
+    throw new Error('Failed to fetch places');
   }
 };
+
 
 export interface Category {
   id: number;

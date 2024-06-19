@@ -1,13 +1,103 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Switch } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const ProfileScreen = () => {
+  const [activeTab, setActiveTab] = useState('profile');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'profile':
+        return (
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Profil Pengguna</Text>
+            <Text style={styles.sectionText}>Nama: John Doe</Text>
+            <Text style={styles.sectionText}>Email: john.doe@example.com</Text>
+            <Text style={styles.sectionText}>Bio: Penggemar traveling, suka menjelajah tempat baru dan bertemu dengan orang-orang baru.</Text>
+          </View>
+        );
+      case 'trips':
+        return (
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Pernah Traveling Kemana Aja</Text>
+            <View style={styles.trip}>
+              <Image
+                style={styles.tripImage}
+                source={{ uri: 'https://via.placeholder.com/150' }}
+              />
+              <View style={styles.tripInfo}>
+                <Text style={styles.tripTitle}>Bali, Indonesia</Text>
+                <Text style={styles.tripDate}>Juli 2023</Text>
+              </View>
+            </View>
+            <View style={styles.trip}>
+              <Image
+                style={styles.tripImage}
+                source={{ uri: 'https://via.placeholder.com/150' }}
+              />
+              <View style={styles.tripInfo}>
+                <Text style={styles.tripTitle}>Tokyo, Jepang</Text>
+                <Text style={styles.tripDate}>Mei 2022</Text>
+              </View>
+            </View>
+          </View>
+        );
+      case 'wishlist':
+        return (
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Wishlist Destinasi</Text>
+            <View style={styles.destination}>
+              <Image
+                style={styles.destinationImage}
+                source={{ uri: 'https://via.placeholder.com/150' }}
+              />
+              <Text style={styles.destinationTitle}>Paris, Prancis</Text>
+            </View>
+            <View style={styles.destination}>
+              <Image
+                style={styles.destinationImage}
+                source={{ uri: 'https://via.placeholder.com/150' }}
+              />
+              <Text style={styles.destinationTitle}>New York, Amerika Serikat</Text>
+            </View>
+          </View>
+        );
+      case 'settings':
+        return (
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Pengaturan</Text>
+            <View style={styles.setting}>
+              <Text style={styles.settingTitle}>Notifikasi</Text>
+              <Switch
+                value={notificationsEnabled}
+                onValueChange={(value) => setNotificationsEnabled(value)}
+              />
+            </View>
+            <View style={styles.setting}>
+              <Text style={styles.settingTitle}>Mode Gelap</Text>
+              <Switch
+                value={darkModeEnabled}
+                onValueChange={(value) => setDarkModeEnabled(value)}
+              />
+            </View>
+            <TouchableOpacity style={styles.logoutButton}>
+              <Text style={styles.logoutButtonText}>Keluar</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileInfo}>
         <Image
           style={styles.profileImage}
-          source={{ uri: 'https://via.placeholder.com/100x100' }}
+          source={{ uri: 'https://randomuser.me/api/portraits/men/1.jpg' }}
         />
         <Text style={styles.profileName}>John Doe</Text>
         <Text style={styles.profileEmail}>john.doe@example.com</Text>
@@ -23,62 +113,32 @@ const ProfileScreen = () => {
         </View>
       </View>
       <View style={styles.tabContainer}>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Profile</Text>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'profile' && styles.activeTabButton]}
+          onPress={() => setActiveTab('profile')}
+        >
+          <Text style={[styles.tabButtonText, activeTab === 'profile' && styles.activeTabButtonText]}>Profil</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Trips</Text>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'trips' && styles.activeTabButton]}
+          onPress={() => setActiveTab('trips')}
+        >
+          <Text style={[styles.tabButtonText, activeTab === 'trips' && styles.activeTabButtonText]}>Trips</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Wishlist</Text>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'wishlist' && styles.activeTabButton]}
+          onPress={() => setActiveTab('wishlist')}
+        >
+          <Text style={[styles.tabButtonText, activeTab === 'wishlist' && styles.activeTabButtonText]}>Wishlist</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Settings</Text>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'settings' && styles.activeTabButton]}
+          onPress={() => setActiveTab('settings')}
+        >
+          <Text style={[styles.tabButtonText, activeTab === 'settings' && styles.activeTabButtonText]}>Pengaturan</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.section}>
-        <Text style={styles.sectionHeader}>Upcoming Trips</Text>
-        <View style={styles.trip}>
-          <Image
-            style={styles.tripImage}
-            source={{ uri: 'https://via.placeholder.com/150x100' }}
-          />
-          <View style={styles.tripInfo}>
-            <Text style={styles.tripTitle}>Paris, France</Text>
-            <Text style={styles.tripDate}>June 15, 2024 - June 22, 2024</Text>
-          </View>
-        </View>
-        <View style={styles.trip}>
-          <Image
-            style={styles.tripImage}
-            source={{ uri: 'https://via.placeholder.com/150x100' }}
-          />
-          <View style={styles.tripInfo}>
-            <Text style={styles.tripTitle}>Tokyo, Japan</Text>
-            <Text style={styles.tripDate}>July 5, 2024 - July 12, 2024</Text>
-          </View>
-        </View>
-      </View>
-      <View style={styles.section}>
-        <Text style={styles.sectionHeader}>Wishlist Destinations</Text>
-        <View style={styles.destination}>
-          <Image
-            style={styles.destinationImage}
-            source={{ uri: 'https://via.placeholder.com/150x100' }}
-          />
-          <Text style={styles.destinationTitle}>Bali, Indonesia</Text>
-        </View>
-        <View style={styles.destination}>
-          <Image
-            style={styles.destinationImage}
-            source={{ uri: 'https://via.placeholder.com/150x100' }}
-          />
-          <Text style={styles.destinationTitle}>Santorini, Greece</Text>
-        </View>
-      </View>
-      <TouchableOpacity style={styles.logoutButton}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
+      {renderTabContent()}
     </ScrollView>
   );
 };
@@ -129,18 +189,24 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 16,
+    marginTop: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#ccc',
   },
   tabButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#f2f2f2',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   tabButtonText: {
     fontSize: 16,
-    color: '#000',
+    color: 'gray',
+  },
+  activeTabButton: {
+    borderBottomWidth: 2,
+    borderBottomColor: 'black',
+  },
+  activeTabButtonText: {
+    color: 'black',
   },
   section: {
     padding: 16,
@@ -148,6 +214,11 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 8,
+  },
+  sectionText: {
+    fontSize: 16,
     color: '#000',
     marginBottom: 8,
   },
@@ -187,6 +258,16 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#000',
+  },
+  setting: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  settingTitle: {
+    fontSize: 16,
     color: '#000',
   },
   logoutButton: {

@@ -1,43 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { fetchPlaces, Place } from '../utils/api';
 import SectionTitle from './SectionTitle';
-import { MaterialIcons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import SkeletonCard from './SkeletonPopular';
+import { useRouter } from 'expo-router';
 
 const Popular = () => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const getPlaces = async () => {
       try {
-        const data = await fetchPlaces();
-        setPlaces(data);
+        const data = await fetchPlaces(page);
+        setPlaces((prevPlaces) => [...prevPlaces, ...data]);
       } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
+        setIsLoadingMore(false);
       }
     };
 
     getPlaces();
-  }, []);
-
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
-  if (error) {
-    return <Text>Error: {error}</Text>;
-  }
+  }, [page]);
 
   const handlePress = (slug: string) => {
     router.push(`/place/${slug}`);
     console.log(`Pressed: ${slug}`);
   };
 
+  const loadMore = () => {
+    if (!isLoadingMore) {
+      setIsLoadingMore(true);
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   const renderItem = ({ item }: { item: Place }) => (
     <TouchableOpacity style={styles.card} onPress={() => handlePress(item.slug)}>
@@ -53,6 +55,20 @@ const Popular = () => {
     </TouchableOpacity>
   );
 
+  if (loading && page === 1) {
+    return (
+      <View style={styles.skeletonContainer}>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
+      </View>
+    );
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
+
   return (
     <View>
       <SectionTitle title="Populer" onViewAllPress={() => console.log('View all popular')} />
@@ -63,6 +79,15 @@ const Popular = () => {
         numColumns={2}
         columnWrapperStyle={styles.row}
         style={{ paddingHorizontal: 15 }}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isLoadingMore ? (
+          <View style={styles.skeletonContainer}>
+            {Array.from({ length: 2 }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))}
+          </View>
+        ) : null}
       />
     </View>
   );
@@ -120,6 +145,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     marginBottom: 4,
+  },
+  skeletonContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
   },
 });
 

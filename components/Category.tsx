@@ -1,10 +1,11 @@
 // Component/Category.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { fetchCategories, Category } from '../utils/api';
 import SectionTitle from './SectionTitle';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import SkeletonCategory from './SkeletonCategory'; // Import SkeletonCategory
 
 const CategorySelector = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -27,14 +28,6 @@ const CategorySelector = () => {
     getCategories();
   }, []);
 
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
-  if (error) {
-    return <Text>Error: {error}</Text>;
-  }
-
   const colors = ['#FF6347', '#6A5ACD', '#20B2AA', '#FF4500', '#2E8B57', '#1E90FF', '#DA70D6', '#FFD700'];
   const icons = ['local-activity', 'local-dining', 'local-florist', 'local-cafe', 'local-bar', 'local-movies', 'local-hospital', 'local-hotel'];
 
@@ -55,6 +48,23 @@ const CategorySelector = () => {
     const index = Math.abs(hashString(name)) % icons.length;
     return icons[index];
   };
+
+  if (loading) {
+    return (
+      <View>
+        <SectionTitle title="Kategori" onViewAllPress={() => console.log('View all categories')} />
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingStart: 10 }} >
+          {Array.from({ length: 8 }).map((_, index) => (
+            <SkeletonCategory key={index} />
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
 
   return (
     <View>

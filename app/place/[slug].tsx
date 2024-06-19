@@ -3,6 +3,7 @@ import { ActivityIndicator, View, Text, Image, StyleSheet, ScrollView, Touchable
 import { WebView } from 'react-native-webview'
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import PlaceDetailSkeleton from '@/components/PlaceDetailSkeleton'; // Ganti dengan lokasi yang sesuai
 
 const PlaceDetail = () => {
   const { slug } = useLocalSearchParams();
@@ -28,17 +29,12 @@ const PlaceDetail = () => {
     getPlace();
   }, [slug]);
 
-  if (loading) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  const renderSkeleton = () => {
+    return <PlaceDetailSkeleton />;
+  };
 
-  if (!place) {
-    return <Text style={{ textAlign: 'center' }}>Place not found</Text>;
+  if (loading || !place) {
+    return renderSkeleton();
   }
 
   const description = place.description;
@@ -339,4 +335,3 @@ const styles = StyleSheet.create({
 });
 
 export default PlaceDetail;
-

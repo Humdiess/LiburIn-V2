@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import SectionTitle from './SectionTitle';
-import { useRouter } from 'expo-router'; // Update import to use `useRouter` hook
+import SkeletonCard from './SkeletonCard';
+import { useRouter } from 'expo-router';
 
 interface Category {
   id: number;
@@ -19,9 +20,9 @@ interface Place {
   category: Category;
 }
 
-const fetchPlaces = async (): Promise<Place[]> => {
+const fetchPlaces = async (page = 1): Promise<Place[]> => {
   try {
-    const response = await fetch('https://dewalaravel.com/api/places');
+    const response = await fetch(`https://dewalaravel.com/api/places?page=${page}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -56,31 +57,49 @@ const Recommendations = () => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
     const getPlaces = async () => {
       try {
-        const data = await fetchPlaces();
-        // Shuffle the array to randomize order
-        setPlaces(data.sort(() => Math.random() - 0.5));
+        const data = await fetchPlaces(page);
+        setPlaces((prevPlaces) => [...prevPlaces, ...data]);
       } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
+        setIsLoadingMore(false);
       }
     };
 
     getPlaces();
-  }, []);
+  }, [page]);
 
   const handlePress = (slug: string) => {
     router.push(`/place/${slug}`);
     console.log(`Pressed: ${slug}`);
   };
 
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+  const handleScroll = (event: any) => {
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+    if (layoutMeasurement.width + contentOffset.x >= contentSize.width - 50) {
+      if (!isLoadingMore) {
+        setIsLoadingMore(true);
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  };
+
+  if (loading && page === 1) {
+    return (
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ paddingStart: 10 }}>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <SkeletonCard key={`skeleton-${index}`} />
+        ))}
+      </ScrollView>
+    );
   }
 
   if (error) {
@@ -90,9 +109,18 @@ const Recommendations = () => {
   return (
     <View>
       <SectionTitle title="Rekomendasi" onViewAllPress={() => console.log('View all recommendations')} />
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ paddingStart: 10 }}>
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        style={{ paddingStart: 10 }}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
         {places.map((place) => (
-          <PlaceCard key={place.id} place={place} handlePress={handlePress} />
+          <PlaceCard key={`place-${place.id}`} place={place} handlePress={handlePress} />
+        ))}
+        {isLoadingMore && Array.from({ length: 2 }).map((_, index) => (
+          <SkeletonCard key={`skeleton-more-${index}`} />
         ))}
       </ScrollView>
     </View>

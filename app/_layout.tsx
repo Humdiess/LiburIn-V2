@@ -24,7 +24,7 @@ export default function RootLayout() {
       <Stack.Screen
         name="search"
         options={{ 
-          headerShown: true, 
+          headerShown: false, 
           headerTitle: "Search" }} 
       />
     </Stack>

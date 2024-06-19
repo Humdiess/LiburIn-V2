@@ -1,48 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-
-interface Category {
-  id: number;
-  name: string;
-  slug: string;
-}
-
-interface Place {
-  id: number;
-  name: string;
-  slug: string;
-  photo: string;
-  description: string;
-  category: Category;
-}
-
-const fetchPlaces = async (): Promise<Place[]> => {
-  try {
-    const response = await fetch('https://dewalaravel.com/api/places');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const result = await response.json();
-    return result.data;
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-    throw error;
-  }
-};
-
-const PlaceCard = ({ place }: { place: Place }) => (
-  <TouchableOpacity style={styles.card}>
-    <Image source={{ uri: place.photo }} style={styles.image} />
-    <View style={styles.content}>
-      <Text style={styles.name}>{place.name}</Text>
-      <View style={styles.categoryContainer}>
-        <MaterialIcons name="category" size={18} color="grey" />
-        <Text style={styles.category}>{place.category.name}</Text>
-      </View>
-    </View>
-  </TouchableOpacity>
-);
+import { View, Text, TextInput, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { useRouter, useNavigation } from 'expo-router'; // Adjusted import
+import { fetchPlaces, Place } from '@/utils/api'; // Assuming fetchPlaces and types are imported from appropriate files
+import SkeletonLoader from '@/components/SkeletonLoader'; // Import the SkeletonLoader component
 
 const Search = () => {
   const [places, setPlaces] = useState<Place[]>([]);
@@ -50,21 +11,27 @@ const Search = () => {
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const navigation = useNavigation();
+
+  const loadPlaces = async (page: number = 1) => {
+    try {
+      const data = await fetchPlaces(page);
+      setPlaces((prevPlaces) => (page === 1 ? data : [...prevPlaces, ...data]));
+      setFilteredPlaces((prevFiltered) => (page === 1 ? data : [...prevFiltered, ...data]));
+      setCurrentPage(page);
+      // Assuming the total pages is known and can be set here
+      setTotalPages(2); // Update this if you have a dynamic way to get total pages
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getPlaces = async () => {
-      try {
-        const data = await fetchPlaces();
-        setPlaces(data);
-        setFilteredPlaces(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getPlaces();
+    loadPlaces();
   }, []);
 
   useEffect(() => {
@@ -81,8 +48,34 @@ const Search = () => {
     }
   }, [query, places]);
 
-  if (loading) {
-    return <Text>Loading...</Text>;
+  const handleLoadMore = () => {
+    if (currentPage < totalPages) {
+      loadPlaces(currentPage + 1);
+    }
+  };
+
+  const handleCancelSearch = () => {
+    setQuery('');
+    setFilteredPlaces(places);
+  };
+
+  const renderPlaceCard = ({ item }: { item: Place }) => (
+    <PlaceCard place={item} />
+  );
+
+  const PlaceCard = ({ place }: { place: Place }) => (
+    <TouchableOpacity style={styles.card} onPress={() => navigation.push(`place/${place.slug}`)}>
+      <Text style={styles.name}>{place.name}</Text>
+      <MaterialCommunityIcons name='arrow-up-right' size={16} color={'grey'} />
+    </TouchableOpacity>
+  );
+
+  if (loading && currentPage === 1) {
+    return (
+      <View style={styles.container}>
+        <SkeletonLoader />
+      </View>
+    );
   }
 
   if (error) {
@@ -91,17 +84,32 @@ const Search = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search places..."
-        value={query}
-        onChangeText={setQuery}
-      />
+      <View style={styles.searchContainer}>
+        <TouchableOpacity style={{ marginEnd: 2 }} onPress={() => navigation.goBack()}>
+          <MaterialIcons name='chevron-left' size={32} />
+        </TouchableOpacity>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Cari tempat wisata..."
+          value={query}
+          onChangeText={setQuery}
+          placeholderTextColor="#AAAAAA"
+        />
+        {query.length > 0 && (
+          <TouchableOpacity style={styles.cancelButton} onPress={handleCancelSearch}>
+            <MaterialIcons name="close" size={16} color="#AAAAAA" />
+          </TouchableOpacity>
+        )}
+      </View>
       <FlatList
         data={filteredPlaces}
-        renderItem={({ item }) => <PlaceCard key={item.id} place={item} />}
+        renderItem={renderPlaceCard}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.flatListContainer}
+        showsVerticalScrollIndicator={false}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={loading && currentPage > 1 ? <SkeletonLoader /> : null}
       />
     </View>
   );
@@ -109,57 +117,43 @@ const Search = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    backgroundColor: 'white',
+    height: '100%',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 40,
+    backgroundColor: 'rgba(0, 0, 0, 0.0)',
   },
   searchInput: {
-    height: 40,
-    borderColor: 'gray',
+    borderColor: 'black',
     borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginBottom: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    width: '85%',
+  },
+  cancelButton: {
+    position: 'absolute',
+    right: 10,
   },
   flatListContainer: {
-    paddingBottom: 20,
+    marginTop: 10,
   },
   card: {
     flexDirection: 'row',
-    marginBottom: 15,
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginRight: 10,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: 'grey',
+    padding: 8,
   },
   name: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  categoryContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  category: {
-    marginLeft: 5,
-    fontSize: 14,
-    color: 'grey',
+    color: 'gray',
   },
 });
 
 export default Search;
+  

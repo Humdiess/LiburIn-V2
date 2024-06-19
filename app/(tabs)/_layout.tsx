@@ -18,7 +18,7 @@ export default function TabsLayout() {
                     },
                     headerShadowVisible: false,
                     headerLeft: () => (
-                        <TouchableOpacity onPress={() => router.push('../profile') } style={{ marginLeft: 25 }}>
+                        <TouchableOpacity onPress={() => router.push('../profile') } style={{ marginLeft: 15 }}>
                             <MaterialCommunityIcons name="menu" size={24} color="black" />
                         </TouchableOpacity>
                     ),
@@ -51,7 +51,7 @@ export default function TabsLayout() {
                 name="activity" 
                 options={{
                     headerShown: true,
-                    headerTitle: "Your activity",
+                    headerTitle: "Aktivitas Kamu",
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color, size, focused }) => (
                         <MaterialCommunityIcons name="calendar-outline" size={size} color={focused ? "black" : color} />
@@ -61,7 +61,7 @@ export default function TabsLayout() {
             <Tabs.Screen 
                 name="profile" 
                 options={{
-                    headerTitle: "Profile",
+                    headerTitle: "Profil Pengguna",
                     headerTitleAlign: "center",
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color, size, focused }) => (

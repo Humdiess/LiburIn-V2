@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, Image, ScrollView, Dimensions, Text, Animated } from 'react-native';
+import HeroSkeleton from './HeroSkeleton'; // Import HeroSkeleton
 
 const { width: viewportWidth } = Dimensions.get('window');
 
@@ -7,6 +8,7 @@ const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const scrollViewRef = useRef<ScrollView | null>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current; 
+  const [loading, setLoading] = useState(true); // State untuk menandai loading
 
   const banners = [
     require('../assets/images/banner (1).png'),
@@ -24,7 +26,7 @@ const Hero = () => {
   };
 
   useEffect(() => {
-      const intervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
       setActiveSlide((prevSlide) => {
         const nextSlide = (prevSlide + 1) % banners.length;
         if (scrollViewRef.current) {
@@ -40,8 +42,17 @@ const Hero = () => {
       useNativeDriver: true,
     }).start();
 
+    // Simulasi penyelesaian loading
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
     return () => clearInterval(intervalId);
   }, [banners.length, fadeAnim]);
+
+  if (loading) {
+    return <HeroSkeleton />; // Tampilkan skeleton ketika loading
+  }
 
   return (
     <View style={styles.hero}>
@@ -76,6 +87,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     borderRadius: 10,
+    marginBottom: 10,
   },
   image: {
     width: '100%',
