@@ -1,81 +1,85 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 
 const ProfileScreen = () => {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.profileInfo}>
         <Image
           style={styles.profileImage}
           source={{ uri: 'https://via.placeholder.com/100x100' }}
         />
-        <Text style={styles.profileName}>Dr. Jimmy Sullivan</Text>
-        <Text style={styles.profileJob}>Dentist @arisal Dental Hospital</Text>
+        <Text style={styles.profileName}>John Doe</Text>
+        <Text style={styles.profileEmail}>john.doe@example.com</Text>
       </View>
       <View style={styles.metrics}>
         <View style={styles.metric}>
-          <Text style={styles.metricTitle}>Feedback</Text>
-          <Text style={styles.metricValue}>1k+</Text>
+          <Text style={styles.metricTitle}>Trips</Text>
+          <Text style={styles.metricValue}>25</Text>
         </View>
         <View style={styles.metric}>
-          <Text style={styles.metricTitle}>Patient</Text>
-          <Text style={styles.metricValue}>1M+</Text>
+          <Text style={styles.metricTitle}>Wishlist</Text>
+          <Text style={styles.metricValue}>10</Text>
         </View>
       </View>
       <View style={styles.tabContainer}>
         <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Review</Text>
+          <Text style={styles.tabButtonText}>Profile</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>Information</Text>
+          <Text style={styles.tabButtonText}>Trips</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabButton}>
+          <Text style={styles.tabButtonText}>Wishlist</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabButton}>
+          <Text style={styles.tabButtonText}>Settings</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.reviews}>
-        <View style={styles.review}>
-          <View style={styles.reviewHeader}>
-            <Image
-              style={styles.reviewImage}
-              source={{ uri: 'https://via.placeholder.com/40x40' }}
-            />
-            <View style={styles.reviewName}>
-              <Text style={styles.reviewNameText}>Tariq Ahmed Nill</Text>
-              <Text style={styles.reviewDate}>08-10-20</Text>
-            </View>
+      <View style={styles.section}>
+        <Text style={styles.sectionHeader}>Upcoming Trips</Text>
+        <View style={styles.trip}>
+          <Image
+            style={styles.tripImage}
+            source={{ uri: 'https://via.placeholder.com/150x100' }}
+          />
+          <View style={styles.tripInfo}>
+            <Text style={styles.tripTitle}>Paris, France</Text>
+            <Text style={styles.tripDate}>June 15, 2024 - June 22, 2024</Text>
           </View>
-          <View style={styles.reviewRating}>
-            <Text style={styles.reviewRatingText}>*****</Text>
-          </View>
-          <Text style={styles.reviewText}>
-            I haven't see Dr. Lul in a few years & he
-            welcomed me back warmly, spent a lot
-            of time with me...
-          </Text>
         </View>
-        <View style={styles.review}>
-          <View style={styles.reviewHeader}>
-            <Image
-              style={styles.reviewImage}
-              source={{ uri: 'https://via.placeholder.com/40x40' }}
-            />
-            <View style={styles.reviewName}>
-              <Text style={styles.reviewNameText}>Sakib Khan</Text>
-              <Text style={styles.reviewDate}>08-10-20</Text>
-            </View>
+        <View style={styles.trip}>
+          <Image
+            style={styles.tripImage}
+            source={{ uri: 'https://via.placeholder.com/150x100' }}
+          />
+          <View style={styles.tripInfo}>
+            <Text style={styles.tripTitle}>Tokyo, Japan</Text>
+            <Text style={styles.tripDate}>July 5, 2024 - July 12, 2024</Text>
           </View>
-          <View style={styles.reviewRating}>
-            <Text style={styles.reviewRatingText}>*****</Text>
-          </View>
-          <Text style={styles.reviewText}>
-            I haven't see Dr. Lul in a few years & he
-            welcomed me back warmly, spent a lot
-            of time with me...
-          </Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.addReviewButton}>
-        <Text style={styles.addReviewButtonText}>+</Text>
+      <View style={styles.section}>
+        <Text style={styles.sectionHeader}>Wishlist Destinations</Text>
+        <View style={styles.destination}>
+          <Image
+            style={styles.destinationImage}
+            source={{ uri: 'https://via.placeholder.com/150x100' }}
+          />
+          <Text style={styles.destinationTitle}>Bali, Indonesia</Text>
+        </View>
+        <View style={styles.destination}>
+          <Image
+            style={styles.destinationImage}
+            source={{ uri: 'https://via.placeholder.com/150x100' }}
+          />
+          <Text style={styles.destinationTitle}>Santorini, Greece</Text>
+        </View>
+      </View>
+      <TouchableOpacity style={styles.logoutButton}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
     color: '#000',
     marginBottom: 8,
   },
-  profileJob: {
+  profileEmail: {
     fontSize: 16,
     color: '#000',
   },
@@ -138,61 +142,66 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000',
   },
-  reviews: {
+  section: {
     padding: 16,
   },
-  review: {
-    marginBottom: 16,
-    padding: 16,
-    backgroundColor: '#f2f2f2',
-    borderRadius: 8,
-  },
-  reviewHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
     marginBottom: 8,
   },
-  reviewImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  trip: {
+    flexDirection: 'row',
+    marginBottom: 16,
   },
-  reviewName: {
-    marginLeft: 8,
+  tripImage: {
+    width: 150,
+    height: 100,
+    borderRadius: 8,
   },
-  reviewNameText: {
+  tripInfo: {
+    marginLeft: 16,
+    justifyContent: 'center',
+  },
+  tripTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
   },
-  reviewDate: {
+  tripDate: {
     fontSize: 14,
     color: '#000',
   },
-  reviewRating: {
-    marginBottom: 8,
+  destination: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  reviewRatingText: {
-    fontSize: 18,
+  destinationImage: {
+    width: 150,
+    height: 100,
+    borderRadius: 8,
+  },
+  destinationTitle: {
+    marginLeft: 16,
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#000',
   },
-  reviewText: {
-    fontSize: 14,
-    color: '#000',
-  },
-  addReviewButton: {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-    width: 50,
+  logoutButton: {
+    alignSelf: 'center',
+    marginTop: 16,
+    marginBottom: 32,
+    width: '90%',
     height: 50,
     borderRadius: 25,
     backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  addReviewButtonText: {
-    fontSize: 24,
+  logoutButtonText: {
+    fontSize: 18,
     color: '#fff',
   },
 });

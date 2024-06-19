@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   },
   placesList: {
     padding: 10,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#ffffff',
   },
   placeItem: {
     padding: 10,
