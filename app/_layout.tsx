@@ -16,6 +16,12 @@ export default function RootLayout() {
           headerTitle: "Category" }} 
       />
       <Stack.Screen
+        name="place/[slug]"
+        options={{ 
+          headerShown: false, 
+          headerTitle: "Category" }} 
+      />
+      <Stack.Screen
         name="search"
         options={{ 
           headerShown: true, 
